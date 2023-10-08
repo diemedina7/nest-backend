@@ -5,6 +5,9 @@
 # Mongo DB
 /mongo
 
+# Environmets variables
+.env
+
 # Logs
 logs
 *.log
