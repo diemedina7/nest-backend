@@ -5,11 +5,10 @@ import { Model } from 'mongoose';
 
 import * as bcryptjs from 'bcryptjs'
 
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { CreateUserDto, UpdateAuthDto, LoginDto, RegisterUserDto } from './dto';
 import { User } from './entities/user.entity';
-import { LoginDto } from './dto/login.dto';
 import { JwtPayload } from './interfaces/jwt-payload';
+import { LoginResponse } from './interfaces/login-response';
 
 @Injectable()
 export class AuthService {
@@ -21,9 +20,6 @@ export class AuthService {
   ) {}
 
   async create(CreateUserDto: CreateUserDto): Promise<User> {
-    // TODO: guardar usuario
-    // TODO: generar JWT
-
     try {
       const { password, ...userData } = CreateUserDto;
 
@@ -46,7 +42,17 @@ export class AuthService {
     }
   }
 
-  async login( loginDto: LoginDto ) {
+  async register(registerUserDto: RegisterUserDto): Promise<LoginResponse> {
+    // TODO: guardar usuario
+    const user = await this.create(registerUserDto);
+
+    return {
+      user: user,
+      token: this.getJWToken({ id: user._id })
+    }
+  }
+
+  async login( loginDto: LoginDto ): Promise<LoginResponse> {
     const { email, password } = loginDto;
     const user = await this.userModel.findOne({ email: email })
 
@@ -83,6 +89,7 @@ export class AuthService {
   }
 
   getJWToken( payload: JwtPayload ) {
+    // TODO: generar JWT
     const token = this.jwtService.sign( payload );
     return token;
   }
