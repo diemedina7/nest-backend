@@ -83,6 +83,11 @@ export class AuthService {
     return rest;
   }
 
+  checkToken(token: string) {
+    const token_nuevo = this.jwtService.sign( token );
+    
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} auth`;
   }
